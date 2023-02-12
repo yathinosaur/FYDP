@@ -17,7 +17,7 @@ GPIO.setup(pinNum, GPIO.OUT)
 pwm = GPIO.PWM(pinNum, freq)
 
 # set servo open
-pwm.start(6.5)
+pwm.start(2.5)
 
 @app.route('/')
 def index():
@@ -29,7 +29,7 @@ def setServoAngle(angle):
 
     duty_cycle = (FULL_OPEN - ZERO) / MAX_ANGLE * angle + ZERO
     pwm.ChangeDutyCycle(duty_cycle)
-    time.sleep(1)
+
     return "OK"
 
 
