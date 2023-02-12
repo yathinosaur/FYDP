@@ -16,7 +16,7 @@ pwm.start(6.5)
 def index():
     return 'HaptArmVR is cool'
 
-@app.route('/servo/<string:angle>')
+@app.route('/servo/<int:angle>')
 def setServoAngle(angle): 
     assert angle >= 0 and angle <= 270
     duty_cycle = angle / 18
