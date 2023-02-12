@@ -1,5 +1,11 @@
 import RPi.GPIO as GPIO
 from flask import Flask, request, jsonify
+import time
+
+ZERO = 2.5
+FULL_OPEN = 13
+MIN_ANGLE = 0
+MAX_ANGLE = 270
 
 app = Flask(__name__)
 pinNum = 17
@@ -9,6 +15,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(pinNum, GPIO.OUT)
 
 pwm = GPIO.PWM(pinNum, freq)
+
 # set servo open
 pwm.start(6.5)
 
@@ -19,10 +26,16 @@ def index():
 @app.route('/servo/<int:angle>')
 def setServoAngle(angle): 
     assert angle >= 0 and angle <= 270
-    duty_cycle = angle / 18
+
+    duty_cycle = (FULL_OPEN - ZERO) / MAX_ANGLE * angle + ZERO
     pwm.ChangeDutyCycle(duty_cycle)
+    time.sleep(1)
     return "OK"
 
 
 if __name__=="__main__":
-    app.run(host='0.0.0.0', port=5000)
+    try:
+        app.run(host='0.0.0.0', port=5000)
+    finally:
+        pwm.stop()
+        GPIO.cleanup()
